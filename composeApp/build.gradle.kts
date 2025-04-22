@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
     alias(libs.plugins.buildConfig)
+    kotlin("plugin.serialization") version libs.versions.kotlin.get()
 }
 
 kotlin {
