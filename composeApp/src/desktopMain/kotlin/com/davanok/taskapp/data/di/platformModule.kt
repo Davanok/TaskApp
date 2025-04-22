@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.room.Room
 import com.davanok.taskapp.data.database.AppDatabase
 import com.davanok.taskapp.data.platform.appDataDirectory
-import okio.Path.Companion.toPath
 import org.koin.dsl.module
 
 actual fun platformModule() = module {

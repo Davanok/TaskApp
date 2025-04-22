@@ -43,6 +43,8 @@ kotlin {
 
             implementation(libs.napier)
 
+            implementation(libs.kotlinx.datetime)
+
             implementation(libs.androidx.datastore.datastore)
             implementation(libs.androidx.datastore.preferences)
 

@@ -25,6 +25,7 @@ napier = "2.7.1"
 build-config = "5.5.1"
 toaster = "0.3.8"
 koin = "4.0.0"
+kotlinx-datetime = "0.6.2"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -64,6 +65,9 @@ koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin"
 koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin" }
 koin-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
 koin-navigation = { group = "io.insert-koin", name = "koin-compose-viewmodel-navigation", version.ref = "koin" }
+
+# datetime - kotlinx
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
