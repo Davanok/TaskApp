@@ -10,9 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.davanok.taskapp.data.di.appDeclaration
+import com.davanok.taskapp.data.platform.appDeclaration
 import com.davanok.taskapp.data.di.commonModule
 import com.davanok.taskapp.data.di.databaseModule
+import com.davanok.taskapp.data.di.platformModule
 import com.davanok.taskapp.data.di.viewModelsModule
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -26,7 +27,7 @@ import taskapp.composeapp.generated.resources.compose_multiplatform
 fun App() {
     KoinApplication(application = {
         appDeclaration()
-        modules(commonModule(), databaseModule(), viewModelsModule())
+        modules(commonModule(), databaseModule(), viewModelsModule(), platformModule())
     }) {
         MaterialTheme {
             var showContent by remember { mutableStateOf(false) }

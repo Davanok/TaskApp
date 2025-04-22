@@ -1,4 +1,4 @@
-package com.davanok.taskapp.data.di
+package com.davanok.taskapp.data.platform
 
 import org.koin.core.KoinApplication
 
