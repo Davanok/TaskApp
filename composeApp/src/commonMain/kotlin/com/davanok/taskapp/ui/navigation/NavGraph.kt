@@ -5,7 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.davanok.taskapp.ui.pages.tasksListScreen.MainScreen
+import androidx.navigation.toRoute
+import com.davanok.taskapp.ui.pages.tasksListScreen.TasksListScreen
 
 @Composable
 fun NavGraph(
@@ -15,8 +16,16 @@ fun NavGraph(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Route.Main
+        startDestination = Route.TasksList
     ) {
-        composable<Route.Main> { MainScreen() }
+        composable<Route.TasksList> {
+            TasksListScreen(
+                onNewTask = { navController.navigate(Route.EditTask(null)) },
+                onShowTask = { navController.navigate(Route.EditTask(it)) }
+            )
+        }
+        composable<Route.EditTask> { backStack ->
+            val route: Route.EditTask = backStack.toRoute()
+        }
     }
 }

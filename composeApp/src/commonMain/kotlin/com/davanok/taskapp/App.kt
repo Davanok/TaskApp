@@ -4,6 +4,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.davanok.taskapp.data.di.commonModule
@@ -12,6 +13,8 @@ import com.davanok.taskapp.data.di.platformModule
 import com.davanok.taskapp.data.di.viewModelsModule
 import com.davanok.taskapp.data.platform.appDeclaration
 import com.davanok.taskapp.data.platform.getColorScheme
+import com.davanok.taskapp.ui.components.ColorScheme
+import com.davanok.taskapp.ui.components.LocalColorScheme
 import com.davanok.taskapp.ui.navigation.NavGraph
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
@@ -23,13 +26,16 @@ fun App() {
         appDeclaration()
         modules(commonModule(), databaseModule(), viewModelsModule(), platformModule())
     }) {
+        val isDarkTheme = isSystemInDarkTheme()
         MaterialTheme (
-            colorScheme = getColorScheme(isSystemInDarkTheme())
+            colorScheme = getColorScheme(isDarkTheme)
         ) {
-            NavGraph(
-                navController = rememberNavController(),
-                modifier = Modifier.fillMaxSize()
-            )
+            CompositionLocalProvider(LocalColorScheme provides ColorScheme(isDarkTheme)) {
+                NavGraph(
+                    navController = rememberNavController(),
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
 }

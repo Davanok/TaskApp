@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface Route {
-    @Serializable data object Main: Route
+    @Serializable data object TasksList: Route
+    @Serializable data class EditTask(val taskId: Long?): Route
 }

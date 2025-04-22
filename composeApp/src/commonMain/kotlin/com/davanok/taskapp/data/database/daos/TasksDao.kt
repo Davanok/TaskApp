@@ -2,12 +2,13 @@ package com.davanok.taskapp.data.database.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.davanok.taskapp.data.database.entities.TaskEntity
 
 @Dao
 interface TasksDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(task: TaskEntity)
 
     @Query("SELECT * FROM tasks")
