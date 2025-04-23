@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import taskapp.composeapp.generated.resources.Res
 import taskapp.composeapp.generated.resources.fail_when_load
-import taskapp.composeapp.generated.resources.loading
 
 class TasksListViewModel(
     private val repository: TasksRepository,
@@ -25,17 +24,12 @@ class TasksListViewModel(
     private var allTags: List<String> = emptyList()
 
     fun loadTasks() = viewModelScope.launch {
-        val message = UiMessage.Loading(getString(Res.string.loading))
-        _uiState.value = _uiState.value.run {
-            copy(messages = messages + message)
-        }
         runCatching {
             repository.selectAllTasks()
         }.onFailure {
             _uiState.value = _uiState.value.run {
                 copy(
-                    messages = messages
-                        .fastFilter { it.id != message.id } +
+                    messages = messages +
                             UiMessage.Error(getString(Res.string.fail_when_load), error = it)
                 )
             }
@@ -47,7 +41,6 @@ class TasksListViewModel(
                 copy(
                     completedTasks = completed,
                     notCompletedTasks = notCompleted,
-                    messages = messages.fastFilter { it.id != message.id },
                     filteredTags = allTags
                 )
             }

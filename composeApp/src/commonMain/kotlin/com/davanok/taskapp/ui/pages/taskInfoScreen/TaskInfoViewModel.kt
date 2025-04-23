@@ -12,8 +12,6 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import taskapp.composeapp.generated.resources.Res
 import taskapp.composeapp.generated.resources.fail_when_load
-import taskapp.composeapp.generated.resources.loading
-import kotlin.collections.plus
 
 class TaskInfoViewModel(
     private val repository: TasksRepository
@@ -22,27 +20,19 @@ class TaskInfoViewModel(
     val uiState: StateFlow<TaskInfoUiState> = _uiState
 
     fun loadTask(taskId: Long?) = viewModelScope.launch {
-        val message = UiMessage.Loading(getString(Res.string.loading))
-        _uiState.value = _uiState.value.run {
-            copy(messages = messages + message)
-        }
         runCatching {
             if (taskId == null) TaskEntity()
             else repository.getTask(taskId)
         }.onFailure {
             _uiState.value = _uiState.value.run {
                 copy(
-                    messages = messages
-                        .fastFilter { it.id != message.id } +
+                    messages = messages +
                             UiMessage.Error(getString(Res.string.fail_when_load), error = it)
                 )
             }
         }.onSuccess { loadedTask ->
             _uiState.value = _uiState.value.run {
-                copy(
-                    task = loadedTask?: TaskEntity(),
-                    messages = messages.fastFilter { it.id != message.id }
-                )
+                copy(task = loadedTask?: TaskEntity())
             }
         }
     }

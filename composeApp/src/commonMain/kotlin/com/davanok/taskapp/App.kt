@@ -3,6 +3,7 @@ package com.davanok.taskapp
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -31,10 +32,12 @@ fun App() {
             colorScheme = getColorScheme(isDarkTheme)
         ) {
             CompositionLocalProvider(LocalColorScheme provides ColorScheme(isDarkTheme)) {
-                NavGraph(
-                    navController = rememberNavController(),
-                    modifier = Modifier.fillMaxSize()
-                )
+                Surface {
+                    NavGraph(
+                        navController = rememberNavController(),
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
         }
     }
