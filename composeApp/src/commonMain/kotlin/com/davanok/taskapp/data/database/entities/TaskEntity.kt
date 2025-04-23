@@ -16,3 +16,5 @@ data class TaskEntity(
     val tags: List<String> = emptyList(),
     val completed: Boolean = false,
 )
+
+fun TaskEntity.isBlank() = title.isBlank() && content.isBlank()

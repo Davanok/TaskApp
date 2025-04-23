@@ -4,6 +4,7 @@ import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davanok.taskapp.data.database.entities.TaskEntity
+import com.davanok.taskapp.data.database.entities.isBlank
 import com.davanok.taskapp.data.repositories.TasksRepository
 import com.davanok.taskapp.ui.components.UiMessage
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import taskapp.composeapp.generated.resources.Res
 import taskapp.composeapp.generated.resources.fail_when_load
+import taskapp.composeapp.generated.resources.task_empty
 
 class TaskInfoViewModel(
     private val repository: TasksRepository
@@ -44,8 +46,18 @@ class TaskInfoViewModel(
     }
 
     fun saveTask(onSuccess: () -> Unit) = viewModelScope.launch {
-        repository.insertTask(_uiState.value.task)
-    }.invokeOnCompletion { onSuccess() }
+        if (!_uiState.value.task.isBlank()) {
+            repository.insertTask(_uiState.value.task)
+            onSuccess()
+        }
+        else {
+            _uiState.value = _uiState.value.run {
+                copy(
+                    messages = messages + UiMessage.Error(getString(Res.string.task_empty))
+                )
+            }
+        }
+    }
 
     fun setTaskTitle(value: String) {
         _uiState.value = _uiState.value.run {

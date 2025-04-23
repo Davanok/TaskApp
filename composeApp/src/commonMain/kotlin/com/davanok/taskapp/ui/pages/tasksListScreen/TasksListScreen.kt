@@ -101,7 +101,7 @@ fun TasksListScreen(
                             OutlinedTextField(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .padding(end = 8.dp),
+                                    .padding(start = 8.dp, end = 8.dp),
                                 value = uiState.searchQuery,
                                 onValueChange = viewModel::setSearchQuery
                             )

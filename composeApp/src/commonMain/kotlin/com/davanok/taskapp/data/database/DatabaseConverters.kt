@@ -5,7 +5,9 @@ import kotlinx.datetime.Instant
 
 object DatabaseConverters {
     @TypeConverter
-    fun stringToList(value: String): List<String> = value.split(';')
+    fun stringToList(value: String): List<String> =
+        if (value.isBlank()) emptyList()
+        else value.split(';')
     @TypeConverter
     fun listToString(value: List<String>): String = value.joinToString(";")
 
