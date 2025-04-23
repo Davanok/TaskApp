@@ -1,4 +1,4 @@
-package com.davanok.taskapp.ui.pages.tasksListScreen
+package com.davanok.taskapp.ui.pages.taskInfoScreen
 
 import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.ViewModel
@@ -13,20 +13,22 @@ import org.jetbrains.compose.resources.getString
 import taskapp.composeapp.generated.resources.Res
 import taskapp.composeapp.generated.resources.fail_when_load
 import taskapp.composeapp.generated.resources.loading
+import kotlin.collections.plus
 
-class TasksListViewModel(
-    private val repository: TasksRepository,
+class TaskInfoViewModel(
+    private val repository: TasksRepository
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(TasksListUiState())
-    val uiState: StateFlow<TasksListUiState> = _uiState
+    private val _uiState = MutableStateFlow(TaskInfoUiState())
+    val uiState: StateFlow<TaskInfoUiState> = _uiState
 
-    fun loadTasks() = viewModelScope.launch {
+    fun loadTask(taskId: Long?) = viewModelScope.launch {
         val message = UiMessage.Loading(getString(Res.string.loading))
         _uiState.value = _uiState.value.run {
             copy(messages = messages + message)
         }
         runCatching {
-            repository.selectAllTasks()
+            if (taskId == null) TaskEntity()
+            else repository.getTask(taskId)
         }.onFailure {
             _uiState.value = _uiState.value.run {
                 copy(
@@ -35,46 +37,48 @@ class TasksListViewModel(
                             UiMessage.Error(getString(Res.string.fail_when_load), error = it)
                 )
             }
-        }.onSuccess { loadedTasks ->
+        }.onSuccess { loadedTask ->
             _uiState.value = _uiState.value.run {
-                val (completed, notCompleted) = loadedTasks.partition { it.completed }
                 copy(
-                    completedTasks = completed,
-                    notCompletedTasks = notCompleted,
+                    task = loadedTask?: TaskEntity(),
                     messages = messages.fastFilter { it.id != message.id }
                 )
             }
         }
     }
+
     fun hideMessage(messageId: Long) {
         _uiState.value = _uiState.value.run {
             copy(messages = messages.fastFilter { it.id != messageId })
         }
     }
-    fun setTaskCompleted(task: TaskEntity) = viewModelScope.launch {
-        val changedTask = task.copy(completed = !task.completed)
-        repository.setTaskCompleted(task.id, changedTask.completed)
+
+    fun saveTask(onSuccess: () -> Unit) = viewModelScope.launch {
+        repository.insertTask(_uiState.value.task)
+    }.invokeOnCompletion { onSuccess() }
+
+    fun setTaskTitle(value: String) {
         _uiState.value = _uiState.value.run {
-            if (task.completed)
-                copy(
-                    completedTasks = completedTasks.fastFilter { it.id != task.id },
-                    notCompletedTasks = notCompletedTasks + changedTask
-                )
-            else
-                copy(
-                    completedTasks = completedTasks + changedTask,
-                    notCompletedTasks = notCompletedTasks.fastFilter { it.id != task.id }
-                )
+            copy(task = task.copy(title = value))
         }
     }
-
-    init {
-        loadTasks()
+    fun setTaskContent(value: String) {
+        _uiState.value = _uiState.value.run {
+            copy(task = task.copy(content = value))
+        }
+    }
+    fun addTaskTag(tag: String) {
+        _uiState.value = _uiState.value.run {
+            copy(task = task.copy(tags = task.tags + tag))
+        }
+    }
+    fun removeTaskTag(tag: String) {
+        _uiState.value = _uiState.value.run {
+            copy(task = task.copy(tags = task.tags.fastFilter { it != tag }))
+        }
     }
 }
-
-data class TasksListUiState(
+data class TaskInfoUiState(
     val messages: List<UiMessage> = emptyList(),
-    val completedTasks: List<TaskEntity> = emptyList(),
-    val notCompletedTasks: List<TaskEntity> = emptyList(),
+    val task: TaskEntity = TaskEntity()
 )

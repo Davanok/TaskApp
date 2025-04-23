@@ -2,12 +2,10 @@
 
 package com.davanok.taskapp.ui.components
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,11 +19,9 @@ import com.dokar.sonner.Toaster
 import com.dokar.sonner.ToasterDefaults
 import com.dokar.sonner.listenMany
 import com.dokar.sonner.rememberToasterState
-import kotlin.random.Random
-import kotlin.time.Clock
+import kotlinx.datetime.Clock
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.uuid.Uuid
 
 private const val LOADING = "loading"
 
@@ -99,7 +95,7 @@ private fun UiMessage.toToast(onDismiss: (toast: Toast) -> Unit): Toast = when (
         id = id,
         message = message,
         type = ToastType.Normal,
-        action = TextToastAction(text = "Dismiss", onClick = onDismiss),
+        duration = Duration.INFINITE,
         icon = LOADING
     )
 }

@@ -6,4 +6,5 @@ interface TasksRepository {
     suspend fun insertTask(task: TaskEntity)
     suspend fun selectAllTasks(): List<TaskEntity>
     suspend fun setTaskCompleted(id: Long, completed: Boolean)
+    suspend fun getTask(id: Long): TaskEntity?
 }

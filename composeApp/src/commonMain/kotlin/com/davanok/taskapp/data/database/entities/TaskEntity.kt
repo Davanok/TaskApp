@@ -11,8 +11,8 @@ import kotlinx.datetime.Instant
 data class TaskEntity(
     @PrimaryKey(true) val id: Long = 0,
     val datetime: Instant = Clock.System.now(),
-    val title: String,
-    val content: String,
+    val title: String = "",
+    val content: String = "",
     val tags: List<String> = emptyList(),
     val completed: Boolean = false,
 )

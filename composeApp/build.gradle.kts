@@ -40,6 +40,7 @@ kotlin {
         val desktopMain by getting
 
         commonMain.dependencies {
+            implementation(libs.serialization.json)
             implementation(libs.toaster)
 
             implementation(libs.napier)

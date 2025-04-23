@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Task App</string>
+
+    <string name="new_task">New task</string>
+    <string name="loading">Loading</string>
+    <string name="fail_when_load">Fail when load</string>
+    <string name="back_to_tasks_list">Back to tasks list</string>
+    <string name="save_task">Save task</string>
+    <string name="remove_tag">Remove tag</string>
+    <string name="add_tag">Add tag</string>
+</resources>

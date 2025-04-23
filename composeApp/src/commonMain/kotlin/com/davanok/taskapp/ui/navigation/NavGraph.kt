@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.davanok.taskapp.ui.pages.taskInfoScreen.TaskInfoScreen
 import com.davanok.taskapp.ui.pages.tasksListScreen.TasksListScreen
 
 @Composable
@@ -21,11 +22,15 @@ fun NavGraph(
         composable<Route.TasksList> {
             TasksListScreen(
                 onNewTask = { navController.navigate(Route.EditTask(null)) },
-                onShowTask = { navController.navigate(Route.EditTask(it)) }
+                onShowTask = { navController.navigate(Route.EditTask(it.id)) }
             )
         }
         composable<Route.EditTask> { backStack ->
             val route: Route.EditTask = backStack.toRoute()
+            TaskInfoScreen(
+                taskId = route.taskId,
+                navigateToTasksList = navController::navigateUp
+            )
         }
     }
 }

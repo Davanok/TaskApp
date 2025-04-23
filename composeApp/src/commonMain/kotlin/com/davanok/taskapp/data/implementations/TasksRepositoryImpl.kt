@@ -15,4 +15,7 @@ class TasksRepositoryImpl(
 
     override suspend fun setTaskCompleted(id: Long, completed: Boolean) =
         dao.setTaskCompleted(id, completed)
+
+    override suspend fun getTask(id: Long) =
+        dao.getTask(id)
 }
