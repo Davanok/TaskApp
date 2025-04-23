@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -43,8 +46,11 @@ import org.koin.compose.koinInject
 import taskapp.composeapp.generated.resources.Res
 import taskapp.composeapp.generated.resources.add_tag
 import taskapp.composeapp.generated.resources.back_to_tasks_list
+import taskapp.composeapp.generated.resources.content
 import taskapp.composeapp.generated.resources.remove_tag
 import taskapp.composeapp.generated.resources.save_task
+import taskapp.composeapp.generated.resources.tags
+import taskapp.composeapp.generated.resources.title
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -102,6 +108,7 @@ fun TaskInfoScreen(
     ) {
         Column (
             modifier = Modifier
+                .safeDrawingPadding()
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .nestedScroll(nestedScrollConnection),
@@ -111,12 +118,14 @@ fun TaskInfoScreen(
                 modifier = Modifier.fillMaxWidth(),
                 value = uiState.task.title,
                 onValueChange = viewModel::setTaskTitle,
-                singleLine = true
+                singleLine = true,
+                label = { Text(text = stringResource(Res.string.title)) }
             )
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = uiState.task.content,
-                onValueChange = viewModel::setTaskContent
+                onValueChange = viewModel::setTaskContent,
+                label = { Text(text = stringResource(Res.string.content)) }
             )
             FlowRow(
                 modifier = Modifier.fillMaxWidth()
@@ -154,7 +163,8 @@ fun TaskInfoScreen(
                         )
                     }
                 },
-                singleLine = true
+                singleLine = true,
+                label = { Text(text = stringResource(Res.string.tags)) }
             )
         }
     }

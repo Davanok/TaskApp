@@ -9,4 +9,8 @@
     <string name="save_task">Save task</string>
     <string name="remove_tag">Remove tag</string>
     <string name="add_tag">Add tag</string>
+
+    <string name="title">Title</string>
+    <string name="content">Content</string>
+    <string name="tags">Tags</string>
 </resources>

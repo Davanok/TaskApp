@@ -20,6 +20,8 @@ class TasksListViewModel(
     private val _uiState = MutableStateFlow(TasksListUiState())
     val uiState: StateFlow<TasksListUiState> = _uiState
 
+    private var tasks: List<TaskEntity> = emptyList()
+
     fun loadTasks() = viewModelScope.launch {
         val message = UiMessage.Loading(getString(Res.string.loading))
         _uiState.value = _uiState.value.run {
@@ -36,6 +38,7 @@ class TasksListViewModel(
                 )
             }
         }.onSuccess { loadedTasks ->
+            tasks = loadedTasks
             _uiState.value = _uiState.value.run {
                 val (completed, notCompleted) = loadedTasks.partition { it.completed }
                 copy(
@@ -68,6 +71,18 @@ class TasksListViewModel(
         }
     }
 
+    fun setSearchQuery(value: String) {
+        _uiState.value = _uiState.value.copy(searchQuery = value)
+        val filteredTasks = tasks.fastFilter {
+            it.title.startsWith(value)
+        }
+        val (completed, notCompleted) = filteredTasks.partition { it.completed }
+        _uiState.value = _uiState.value.copy(
+            completedTasks = completed,
+            notCompletedTasks = notCompleted,
+        )
+    }
+
     init {
         loadTasks()
     }
@@ -77,4 +92,5 @@ data class TasksListUiState(
     val messages: List<UiMessage> = emptyList(),
     val completedTasks: List<TaskEntity> = emptyList(),
     val notCompletedTasks: List<TaskEntity> = emptyList(),
+    val searchQuery: String = ""
 )
