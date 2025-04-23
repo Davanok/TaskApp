@@ -1,6 +1,7 @@
 package com.davanok.taskapp.ui.pages.tasksListScreen
 
 import androidx.compose.ui.util.fastFilter
+import androidx.compose.ui.util.fastFlatMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davanok.taskapp.data.database.entities.TaskEntity
@@ -21,6 +22,7 @@ class TasksListViewModel(
     val uiState: StateFlow<TasksListUiState> = _uiState
 
     private var tasks: List<TaskEntity> = emptyList()
+    private var allTags: List<String> = emptyList()
 
     fun loadTasks() = viewModelScope.launch {
         val message = UiMessage.Loading(getString(Res.string.loading))
@@ -39,12 +41,14 @@ class TasksListViewModel(
             }
         }.onSuccess { loadedTasks ->
             tasks = loadedTasks
+            allTags = loadedTasks.fastFlatMap { it.tags }.distinct()
             _uiState.value = _uiState.value.run {
-                val (completed, notCompleted) = loadedTasks.partition { it.completed }
+                val (completed, notCompleted) = tasks.partition { it.completed }
                 copy(
                     completedTasks = completed,
                     notCompletedTasks = notCompleted,
-                    messages = messages.fastFilter { it.id != message.id }
+                    messages = messages.fastFilter { it.id != message.id },
+                    filteredTags = allTags
                 )
             }
         }
@@ -73,13 +77,13 @@ class TasksListViewModel(
 
     fun setSearchQuery(value: String) {
         _uiState.value = _uiState.value.copy(searchQuery = value)
-        val filteredTasks = tasks.fastFilter {
-            it.title.startsWith(value)
-        }
-        val (completed, notCompleted) = filteredTasks.partition { it.completed }
+        val (completed, notCompleted) =
+            (if (value.isBlank()) tasks else tasks.fastFilter { it.title.startsWith(value) || value in it.tags })
+            .partition { it.completed }
         _uiState.value = _uiState.value.copy(
             completedTasks = completed,
             notCompletedTasks = notCompleted,
+            filteredTags = allTags.fastFilter { it.startsWith(value) }.distinct()
         )
     }
 
@@ -92,5 +96,6 @@ data class TasksListUiState(
     val messages: List<UiMessage> = emptyList(),
     val completedTasks: List<TaskEntity> = emptyList(),
     val notCompletedTasks: List<TaskEntity> = emptyList(),
-    val searchQuery: String = ""
+    val searchQuery: String = "",
+    val filteredTags: List<String> = emptyList()
 )
